@@ -1,6 +1,5 @@
 package com.yalanin.springboot_mall.dao.impl;
 
-import com.yalanin.springboot_mall.constant.ProductCategory;
 import com.yalanin.springboot_mall.dao.ProductDao;
 import com.yalanin.springboot_mall.dto.ProductQueryParams;
 import com.yalanin.springboot_mall.dto.ProductRequest;
