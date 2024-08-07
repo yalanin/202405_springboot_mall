@@ -1,5 +1,6 @@
 package com.yalanin.springboot_mall.controller;
 
+import com.yalanin.springboot_mall.dto.UserLoginRequest;
 import com.yalanin.springboot_mall.dto.UserRegisterRequest;
 import com.yalanin.springboot_mall.model.User;
 import com.yalanin.springboot_mall.service.UserService;
@@ -22,5 +23,11 @@ public class UserController {
         Integer userId = userService.register(userRegisterRequest);
         User user = userService.getUserById(userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    }
+
+    @PostMapping("/users/login")
+    public ResponseEntity<User> logIn(@RequestBody @Valid UserLoginRequest userLoginRequest) {
+        User user = userService.login(userLoginRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 }
