@@ -12,9 +12,11 @@ public interface ProductDao {
 
     Integer createProduct(ProductRequest productRequest);
 
+    Integer countProduct(ProductQueryParams productQueryParams);
+
     void updateProduct(Integer productId, ProductRequest productRequest);
 
     void deleteProductById(Integer productId);
 
-    Integer countProduct(ProductQueryParams productQueryParams);
+    void updateStock(Integer productId, Integer stock);
 }
