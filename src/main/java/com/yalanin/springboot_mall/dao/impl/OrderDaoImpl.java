@@ -1,6 +1,7 @@
 package com.yalanin.springboot_mall.dao.impl;
 
 import com.yalanin.springboot_mall.dao.OrderDao;
+import com.yalanin.springboot_mall.dto.OrderQueryParams;
 import com.yalanin.springboot_mall.model.Order;
 import com.yalanin.springboot_mall.model.OrderItem;
 import com.yalanin.springboot_mall.rowmapper.OrderItemRowMapper;
@@ -99,5 +100,38 @@ public class OrderDaoImpl implements OrderDao {
         map.put("orderId", orderId);
 
         return namedParameterJdbcTemplate.query(sql, map, new OrderItemRowMapper());
+    }
+
+    @Override
+    public Integer countOrder(OrderQueryParams orderQueryParams) {
+        String sql = "SELECT COUNT(*) FROM `order` WHERE 1=1";
+
+        Map<String, Object> map = new HashMap<>();
+
+        sql = addFilteringSql(sql, map, orderQueryParams);
+        return namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
+    }
+
+    @Override
+    public List<Order> getOrders(OrderQueryParams orderQueryParams) {
+        String sql = "SELECT order_id, user_id, created_date, last_modified_date, total_amount FROM `order` WHERE 1=1";
+
+        Map<String, Object> map = new HashMap<>();
+        sql = addFilteringSql(sql, map, orderQueryParams);
+        sql = sql + " ORDER BY created_date DESC";
+        sql = sql + " LIMIT :limit OFFSET :offset";
+        map.put("limit", orderQueryParams.getLimit());
+        map.put("offset", orderQueryParams.getOffset());
+        List<Order> orderList = namedParameterJdbcTemplate.query(sql, map, new OrderRowMapper());
+        return orderList;
+    }
+
+    private String addFilteringSql(String sql, Map<String, Object> map, OrderQueryParams orderQueryParams) {
+        // 查詢
+        if(orderQueryParams.getUserId() != null) {
+            sql = sql + " AND user_id = :userId";
+            map.put("userId", orderQueryParams.getUserId());
+        }
+        return sql;
     }
 }
