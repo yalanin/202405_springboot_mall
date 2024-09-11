@@ -47,6 +47,11 @@ public class OrderServiceImpl implements OrderService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
+        if(createOrderRequest.getBuyItemList().isEmpty()) {
+            log.warn("buyItemList 為空");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
         int totalAmount = 0;
         List<OrderItem> orderItemList = new ArrayList<>();
 
@@ -97,7 +102,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getOrders(OrderQueryParams orderQueryParams) {
-        return orderDao.getOrders(orderQueryParams);
+        List<Order> orderList = orderDao.getOrders(orderQueryParams);
+
+        for (Order order : orderList) {
+            List<OrderItem> orderItemList = orderDao.getOrderItemsByOrderId(order.getOrderId());
+
+            order.setOrderItemList(orderItemList);
+        }
+
+        return orderList;
     }
 
     @Override
